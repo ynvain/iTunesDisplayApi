@@ -11,7 +11,7 @@ public interface MainContract {
     //представление для отображения альбомов
     interface View
     {
-        void displayAlbums(ArrayList<Album> albums);
+        void displayAlbums(ArrayList<Album> albums, boolean goToTop);
         void displayMessage(String message);
     }
     //"логика" для отображения альбомов
@@ -20,7 +20,7 @@ public interface MainContract {
 
         void getAlbumsList(String searchRequest);
         void onSearchButtonClicked(String searchResult);
-        void lookUpAlbumInfo(int position, Context context);
+        void lookUpAlbumInfo(Album album, Context context);
 
     }
     //представление для отображения конкретного альбома

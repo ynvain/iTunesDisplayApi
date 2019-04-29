@@ -53,8 +53,7 @@ public class Presenter implements MainContract.Presenter {
                     albums = albumModel.getAlbums();
 
                     albums = sortAlbums(albums);
-
-                    mView.displayAlbums(albums);
+                    mView.displayAlbums(albums, true);
                 } else mView.displayMessage("No albums found, Try again");
 
 
@@ -81,9 +80,9 @@ public class Presenter implements MainContract.Presenter {
 
     //метод переходит ко второму активити после выбора конкретного альбома
     @Override
-    public void lookUpAlbumInfo(int position, Context context)
+    public void lookUpAlbumInfo(Album album, Context context)
     {
-        Album album = albums.get(position);
+
 
         Intent intent = new Intent(context, AlbumInfoActivity.class);
 

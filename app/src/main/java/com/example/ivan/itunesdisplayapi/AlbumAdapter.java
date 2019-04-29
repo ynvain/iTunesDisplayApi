@@ -64,6 +64,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         return avh;
     }
 
+
+
     @Override
     public void onBindViewHolder(AlbumViewHolder holder, int position) {
         Album currentItem = mAlbumList.get(position);

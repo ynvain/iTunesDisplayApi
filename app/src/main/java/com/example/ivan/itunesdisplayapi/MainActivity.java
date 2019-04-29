@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private Context mContext;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         //создание объекта презентера для того, чтобы передать контекст активити
 
+
         mPresenter = new Presenter(this);
 
 
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 String searchRequest = searchEditText.getText().toString();
                 mPresenter.onSearchButtonClicked(searchRequest);
                 closeKeyboard();
+
             }
         });
 
@@ -61,25 +64,31 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         mRecyclerView.setVisibility(View.INVISIBLE);
 
+        closeKeyboard();
+
         mAdapter.setOnItemListener(new AlbumAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                mPresenter.lookUpAlbumInfo(position, mContext);
+
+                Album album = albums.get(position);
+                mPresenter.lookUpAlbumInfo(album, mContext);
             }
         });
+
 
 
     }
 
     //Метод отображает альбомы
     @Override
-    public void displayAlbums(ArrayList<Album> albums)
+    public void displayAlbums(ArrayList<Album> albums, boolean goToTop)
     {
         this.albums.clear();
         this.albums.addAll(albums);
         mAdapter.notifyDataSetChanged();
         mRecyclerView.setVisibility(View.VISIBLE);
 
+        if(goToTop) mRecyclerView.smoothScrollToPosition(0);
 
     }
 
@@ -95,11 +104,30 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     //метод сворачиват клавиатуру после нажатия кнопки поиска
     private void closeKeyboard(){
-        View view = this.getCurrentFocus();
-        if(view!=null){
-            InputMethodManager manage = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            manage.hideSoftInputFromWindow(view.getWindowToken(),0);
+        View view = getCurrentFocus();
+        InputMethodManager manager = (InputMethodManager) getSystemService(mContext.INPUT_METHOD_SERVICE);
+        if(manager.isAcceptingText()){
+            manager.hideSoftInputFromWindow(view.getWindowToken(),0);
         }
+    }
+
+    //сохранение списка с альбомами
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("array", albums);
+        super.onSaveInstanceState(outState);
+
+    }
+    //восстановление списка
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+            ArrayList<Album> tempArray = savedInstanceState.getParcelableArrayList("array");
+            displayAlbums(tempArray,false);
+
+
+
     }
 
 
